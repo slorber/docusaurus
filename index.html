@@ -2,7 +2,7 @@
 <html >
 <head>
 <meta charset="UTF-8">
-<meta name="generator" content="Docusaurus v3.6.3">
+<meta name="generator" content="Docusaurus v3.8.1">
 <link rel="preconnect" href="https://www.google-analytics.com">
 <link rel="preconnect" href="https://www.googletagmanager.com">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-E5CR2Q1NRE"></script>
@@ -26,52 +26,35 @@
 
 
 
-<link rel="stylesheet" href="./katex/katex.min.css" type="text/css"><link rel="stylesheet" href="./assets/css/styles.aab38801.css" />
-<script src="./assets/js/main.60e919fd.js" defer></script>
-<script src="./assets/js/runtime~main.7324b83a.js" defer></script>
+
+<link rel="stylesheet" href="./katex/katex.min.css" type="text/css"><link rel="stylesheet" href="./assets/css/styles.b42a6991.css" />
+<script src="./assets/js/runtime~main.a1b21e16.js" defer></script>
+<script src="./assets/js/main.de8b38fc.js" defer></script>
 </head>
 <body >
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;"><defs>
+<symbol id="theme-svg-external-link" viewBox="0 0 24 24"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z" /></symbol>
+</defs></svg>
 <script>
 (function() {
     var defaultMode = 'light';
     var respectPrefersColorScheme = true;
-
-    function setDataThemeAttribute(theme) {
-      document.documentElement.setAttribute('data-theme', theme);
+    function getSystemColorMode() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
-
     function getQueryStringTheme() {
       try {
         return new URLSearchParams(window.location.search).get('docusaurus-theme')
-      } catch (e) {
-      }
+      } catch (e) {}
     }
-
     function getStoredTheme() {
       try {
         return window['localStorage'].getItem('theme-189');
-      } catch (err) {
-      }
+      } catch (err) {}
     }
-
     var initialTheme = getQueryStringTheme() || getStoredTheme();
-    if (initialTheme !== null) {
-      setDataThemeAttribute(initialTheme);
-    } else {
-      if (
-        respectPrefersColorScheme &&
-        window.matchMedia('(prefers-color-scheme: dark)').matches
-      ) {
-        setDataThemeAttribute('dark');
-      } else if (
-        respectPrefersColorScheme &&
-        window.matchMedia('(prefers-color-scheme: light)').matches
-      ) {
-        setDataThemeAttribute('light');
-      } else {
-        setDataThemeAttribute(defaultMode === 'dark' ? 'dark' : 'light');
-      }
-    }
+    document.documentElement.setAttribute('data-theme', initialTheme || (respectPrefersColorScheme ? getSystemColorMode() : defaultMode));
+    document.documentElement.setAttribute('data-theme-choice', initialTheme || (respectPrefersColorScheme ? 'system' : defaultMode));
   })();
 
 (function() {
