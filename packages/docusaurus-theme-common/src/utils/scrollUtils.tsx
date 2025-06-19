@@ -20,7 +20,7 @@ import {useEvent, ReactContextError} from './reactUtils';
 
 type ScrollController = {
   /** A boolean ref tracking whether scroll events are enabled. */
-  scrollEventsEnabledRef: React.MutableRefObject<boolean>;
+  scrollEventsEnabledRef: React.RefObject<boolean>;
   /** Enable scroll events in `useScrollPosition`. */
   enableScrollEvents: () => void;
   /** Disable scroll events in `useScrollPosition`. */
@@ -52,7 +52,7 @@ export function ScrollControllerProvider({
   children,
 }: {
   children: ReactNode;
-}): JSX.Element {
+}): ReactNode {
   const value = useScrollControllerContextValue();
   return (
     <ScrollMonitorContext.Provider value={value}>
@@ -124,6 +124,7 @@ export function useScrollPosition(
     window.addEventListener('scroll', handleScroll, opts);
 
     return () => window.removeEventListener('scroll', handleScroll, opts);
+    // eslint-disable-next-line react-compiler/react-compiler
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dynamicEffect, scrollEventsEnabledRef, ...deps]);
 }

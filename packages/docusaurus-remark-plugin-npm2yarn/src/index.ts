@@ -7,20 +7,11 @@
 
 import npmToYarn from 'npm-to-yarn';
 import type {Code, Literal} from 'mdast';
-// @ts-expect-error: TODO see https://github.com/microsoft/TypeScript/issues/49721
 import type {MdxJsxFlowElement, MdxJsxAttribute} from 'mdast-util-mdx';
 import type {Node, Parent} from 'unist';
-// @ts-expect-error: TODO see https://github.com/microsoft/TypeScript/issues/49721
-import type {Transformer} from 'unified';
+import type {Transformer, Plugin} from 'unified';
 
-// TODO as of April 2023, no way to import/re-export this ESM type easily :/
-// This might change soon, likely after TS 5.2
-// See https://github.com/microsoft/TypeScript/issues/49721#issuecomment-1517839391
-// import type {Plugin} from 'unified';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-type Plugin<T> = any; // TODO fix this asap
-
-type KnownConverter = 'yarn' | 'pnpm';
+type KnownConverter = 'yarn' | 'pnpm' | 'bun';
 
 type CustomConverter = [name: string, cb: (npmCode: string) => string];
 
@@ -90,7 +81,7 @@ const transformNode = (
         code: npmToYarn(npmCode, converter),
         node,
         value: converter,
-        label: converter === 'yarn' ? 'Yarn' : converter,
+        label: getLabelForConverter(converter),
       });
     }
     const [converterName, converterFn] = converter;
@@ -99,6 +90,17 @@ const transformNode = (
       node,
       value: converterName,
     });
+  }
+
+  function getLabelForConverter(converter: KnownConverter) {
+    switch (converter) {
+      case 'yarn':
+        return 'Yarn';
+      case 'bun':
+        return 'Bun';
+      default:
+        return converter;
+    }
   }
 
   return [
@@ -170,8 +172,7 @@ function createImportNode() {
 }
 
 const plugin: Plugin<[PluginOptions?]> = (options = {}): Transformer => {
-  // @ts-expect-error: todo temporary
-  const {sync = false, converters = ['yarn', 'pnpm']} = options;
+  const {sync = false, converters = ['yarn', 'pnpm', 'bun']} = options;
   return async (root) => {
     const {visit} = await import('unist-util-visit');
 
@@ -207,4 +208,5 @@ const plugin: Plugin<[PluginOptions?]> = (options = {}): Transformer => {
 
 // To continue supporting `require('npm2yarn')` without the `.default` ㄟ(▔,▔)ㄏ
 // TODO change to export default after migrating to ESM
+// @ts-expect-error: Docusaurus v4: remove
 export = plugin;

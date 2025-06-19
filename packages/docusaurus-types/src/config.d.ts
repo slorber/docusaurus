@@ -130,9 +130,21 @@ export type FasterConfig = {
   lightningCssMinimizer: boolean;
   mdxCrossCompilerCache: boolean;
   rspackBundler: boolean;
+  rspackPersistentCache: boolean;
+  ssgWorkerThreads: boolean;
+};
+
+export type FutureV4Config = {
+  removeLegacyPostBuildHeadAttribute: boolean;
+  useCssCascadeLayers: boolean;
 };
 
 export type FutureConfig = {
+  /**
+   * Turns v4 future flags on
+   */
+  v4: FutureV4Config;
+
   experimental_faster: FasterConfig;
 
   experimental_storage: StorageConfig;
@@ -451,7 +463,8 @@ export type Config = Overwrite<
     future?: Overwrite<
       DeepPartial<FutureConfig>,
       {
-        experimental_faster?: boolean | FasterConfig;
+        v4?: boolean | Partial<FutureV4Config>;
+        experimental_faster?: boolean | Partial<FasterConfig>;
       }
     >;
   }

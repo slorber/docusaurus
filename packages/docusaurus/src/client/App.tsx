@@ -5,13 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
+import React, {type ReactNode} from 'react';
 import '@generated/client-modules';
 
 import routes from '@generated/routes';
 import {useLocation} from '@docusaurus/router';
 import renderRoutes from '@docusaurus/renderRoutes';
 import Root from '@theme/Root';
+import ThemeProvider from '@theme/ThemeProvider';
 import SiteMetadata from '@theme/SiteMetadata';
 import normalizeLocation from './normalizeLocation';
 import {BrowserContextProvider} from './browserContext';
@@ -37,16 +38,18 @@ function AppNavigation() {
   );
 }
 
-export default function App(): JSX.Element {
+export default function App(): ReactNode {
   return (
     <ErrorBoundary>
       <DocusaurusContextProvider>
         <BrowserContextProvider>
           <Root>
-            <SiteMetadataDefaults />
-            <SiteMetadata />
-            <BaseUrlIssueBanner />
-            <AppNavigation />
+            <ThemeProvider>
+              <SiteMetadataDefaults />
+              <SiteMetadata />
+              <BaseUrlIssueBanner />
+              <AppNavigation />
+            </ThemeProvider>
           </Root>
           <HasHydratedDataAttribute />
         </BrowserContextProvider>

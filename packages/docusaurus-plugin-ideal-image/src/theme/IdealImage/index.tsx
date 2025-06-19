@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
+import React, {type ReactNode} from 'react';
+import {translate} from '@docusaurus/Translate';
 import ReactIdealImage, {
   type IconKey,
   type State,
-} from '@slorber/react-ideal-image';
-import {translate} from '@docusaurus/Translate';
+} from '@theme/IdealImageLegacy';
 
 import type {Props} from '@theme/IdealImage';
 
@@ -80,7 +80,7 @@ function getMessage(icon: IconKey, state: State) {
   }
 }
 
-export default function IdealImage(props: Props): JSX.Element {
+export default function IdealImage(props: Props): ReactNode {
   const {img, ...propsRest} = props;
 
   // In dev env just use regular img with original file
@@ -93,7 +93,6 @@ export default function IdealImage(props: Props): JSX.Element {
 
   return (
     <ReactIdealImage
-      {...propsRest}
       height={img.src.height ?? 100}
       width={img.src.width ?? 100}
       placeholder={{lqip: img.preSrc}}

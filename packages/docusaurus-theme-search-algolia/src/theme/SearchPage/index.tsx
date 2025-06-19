@@ -7,11 +7,17 @@
 
 /* eslint-disable jsx-a11y/no-autofocus */
 
-import React, {useEffect, useReducer, useRef, useState} from 'react';
+import React, {
+  type ReactNode,
+  useEffect,
+  useReducer,
+  useRef,
+  useState,
+} from 'react';
 import clsx from 'clsx';
 
 import algoliaSearchHelper from 'algoliasearch-helper';
-import algoliaSearch from 'algoliasearch/lite';
+import {liteClient} from 'algoliasearch/lite';
 
 import ExecutionEnvironment from '@docusaurus/ExecutionEnvironment';
 import Head from '@docusaurus/Head';
@@ -19,11 +25,11 @@ import Link from '@docusaurus/Link';
 import {useAllDocsData} from '@docusaurus/plugin-content-docs/client';
 import {
   HtmlClassNameProvider,
+  PageMetadata,
   useEvent,
   usePluralForm,
   useSearchQueryString,
 } from '@docusaurus/theme-common';
-import {useTitleFormatter} from '@docusaurus/theme-common/internal';
 import Translate, {translate} from '@docusaurus/Translate';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import {
@@ -154,19 +160,39 @@ type ResultDispatcher =
   | {type: 'update'; value: ResultDispatcherState}
   | {type: 'advance'; value?: undefined};
 
-function SearchPageContent(): JSX.Element {
+function getSearchPageTitle(searchQuery: string | undefined): string {
+  return searchQuery
+    ? translate(
+        {
+          id: 'theme.SearchPage.existingResultsTitle',
+          message: 'Search results for "{query}"',
+          description: 'The search page title for non-empty query',
+        },
+        {
+          query: searchQuery,
+        },
+      )
+    : translate({
+        id: 'theme.SearchPage.emptyResultsTitle',
+        message: 'Search the documentation',
+        description: 'The search page title for empty query',
+      });
+}
+
+function SearchPageContent(): ReactNode {
   const {
     i18n: {currentLocale},
   } = useDocusaurusContext();
   const {
     algolia: {appId, apiKey, indexName, contextualSearch},
   } = useAlgoliaThemeConfig();
-
   const processSearchResultUrl = useSearchResultUrlProcessor();
   const documentsFoundPlural = useDocumentsFoundPlural();
 
   const docsSearchVersionsHelpers = useDocsSearchVersionsHelpers();
   const [searchQuery, setSearchQuery] = useSearchQueryString();
+  const pageTitle = getSearchPageTitle(searchQuery);
+
   const initialSearchResultState: ResultDispatcherState = {
     items: [],
     query: null,
@@ -219,7 +245,7 @@ function SearchPageContent(): JSX.Element {
     ? ['language', 'docusaurus_tag']
     : [];
 
-  const algoliaClient = algoliaSearch(appId, apiKey);
+  const algoliaClient = liteClient(appId, apiKey);
   const algoliaHelper = algoliaSearchHelper(algoliaClient, indexName, {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore: why errors happens after upgrading to TS 5.5 ?
@@ -286,6 +312,8 @@ function SearchPageContent(): JSX.Element {
   const observer = useRef(
     ExecutionEnvironment.canUseIntersectionObserver &&
       new IntersectionObserver(
+        // TODO need to fix this React Compiler lint error
+        // eslint-disable-next-line react-compiler/react-compiler
         (entries) => {
           const {
             isIntersecting,
@@ -301,24 +329,6 @@ function SearchPageContent(): JSX.Element {
         {threshold: 1},
       ),
   );
-
-  const getTitle = () =>
-    searchQuery
-      ? translate(
-          {
-            id: 'theme.SearchPage.existingResultsTitle',
-            message: 'Search results for "{query}"',
-            description: 'The search page title for non-empty query',
-          },
-          {
-            query: searchQuery,
-          },
-        )
-      : translate({
-          id: 'theme.SearchPage.emptyResultsTitle',
-          message: 'Search the documentation',
-          description: 'The search page title for empty query',
-        });
 
   const makeSearch = useEvent((page: number = 0) => {
     if (contextualSearch) {
@@ -372,8 +382,9 @@ function SearchPageContent(): JSX.Element {
 
   return (
     <Layout>
+      <PageMetadata title={pageTitle} />
+
       <Head>
-        <title>{useTitleFormatter(getTitle())}</title>
         {/*
          We should not index search pages
           See https://github.com/facebook/docusaurus/pull/3233
@@ -382,7 +393,7 @@ function SearchPageContent(): JSX.Element {
       </Head>
 
       <div className="container margin-vert--lg">
-        <Heading as="h1">{getTitle()}</Heading>
+        <Heading as="h1">{pageTitle}</Heading>
 
         <form className="row" onSubmit={(e) => e.preventDefault()}>
           <div
@@ -530,7 +541,7 @@ function SearchPageContent(): JSX.Element {
   );
 }
 
-export default function SearchPage(): JSX.Element {
+export default function SearchPage(): ReactNode {
   return (
     <HtmlClassNameProvider className="search-page-wrapper">
       <SearchPageContent />

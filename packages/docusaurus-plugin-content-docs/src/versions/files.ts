@@ -19,7 +19,7 @@ import type {
   PluginOptions,
   VersionMetadata,
 } from '@docusaurus/plugin-content-docs';
-import type {VersionContext} from './index';
+import type {VersionContext} from './version';
 
 /** Add a prefix like `community_version-1.0.0`. No-op for default instance. */
 function addPluginIdPrefix(fileOrDir: string, pluginId: string): string {
@@ -72,6 +72,21 @@ export function getDocsDirPathLocalized({
         ? CURRENT_VERSION_NAME
         : `version-${versionName}`,
     ],
+  });
+}
+
+export function getPluginDirPathLocalized({
+  localizationDir,
+  pluginId,
+}: {
+  localizationDir: string;
+  pluginId: string;
+}): string {
+  return getPluginI18nPath({
+    localizationDir,
+    pluginName: 'docusaurus-plugin-content-docs',
+    pluginId,
+    subPaths: [],
   });
 }
 

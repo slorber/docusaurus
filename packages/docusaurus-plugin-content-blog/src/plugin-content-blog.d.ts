@@ -16,7 +16,12 @@ declare module '@docusaurus/plugin-content-blog' {
     FrontMatterLastUpdate,
     TagsPluginOptions,
   } from '@docusaurus/utils';
-  import type {DocusaurusConfig, Plugin, LoadContext} from '@docusaurus/types';
+  import type {
+    DocusaurusConfig,
+    Plugin,
+    LoadContext,
+    OptionValidationContext,
+  } from '@docusaurus/types';
   import type {Item as FeedItem} from 'feed';
   import type {Overwrite} from 'utility-types';
 
@@ -46,7 +51,13 @@ declare module '@docusaurus/plugin-content-blog' {
     | 'github'
     | 'linkedin'
     | 'stackoverflow'
-    | 'x';
+    | 'x'
+    | 'bluesky'
+    | 'instagram'
+    | 'threads'
+    | 'mastodon'
+    | 'youtube'
+    | 'twitch';
 
   /**
    * Social platforms of the author.
@@ -376,15 +387,10 @@ declare module '@docusaurus/plugin-content-blog' {
   };
 
   /**
-   * Duplicate from ngryman/reading-time to keep stability of API.
+   * Options for reading time calculation using Intl.Segmenter.
    */
   type ReadingTimeOptions = {
     wordsPerMinute?: number;
-    /**
-     * @param char The character to be matched.
-     * @returns `true` if this character is a word bound.
-     */
-    wordBound?: (char: string) => boolean;
   };
 
   /**
@@ -394,24 +400,22 @@ declare module '@docusaurus/plugin-content-blog' {
   export type ReadingTimeFunction = (params: {
     /** Markdown content. */
     content: string;
+    /** Locale for word segmentation. */
+    locale: string;
     /** Front matter. */
     frontMatter?: BlogPostFrontMatter & {[key: string]: unknown};
-    /** Options accepted by ngryman/reading-time. */
+    /** Options for reading time calculation. */
     options?: ReadingTimeOptions;
   }) => number;
 
   /**
-   * @returns The reading time directly plugged into metadata. `undefined` to
-   * hide reading time for a specific post.
+   * @returns The reading time directly plugged into metadata.
+   * `undefined` to hide reading time for a specific post.
    */
   export type ReadingTimeFunctionOption = (
-    /**
-     * The `options` is not provided by the caller; the user can inject their
-     * own option values into `defaultReadingTime`
-     */
     params: Required<Omit<Parameters<ReadingTimeFunction>[0], 'options'>> & {
       /**
-       * The default reading time implementation from ngryman/reading-time.
+       * The default reading time implementation.
        */
       defaultReadingTime: ReadingTimeFunction;
     },
@@ -517,9 +521,9 @@ declare module '@docusaurus/plugin-content-blog' {
       readingTime: ReadingTimeFunctionOption;
       /** Governs the direction of blog post sorting. */
       sortPosts: 'ascending' | 'descending';
-      /**	Whether to display the last date the doc was updated. */
+      /**	Whether to display the last date the blog post was updated. */
       showLastUpdateTime: boolean;
-      /** Whether to display the author who last updated the doc. */
+      /** Whether to display the author who last updated the blog post. */
       showLastUpdateAuthor: boolean;
       /** An optional function which can be used to transform blog posts
        *  (filter, modify, delete, etc...).
@@ -660,9 +664,14 @@ declare module '@docusaurus/plugin-content-blog' {
     context: LoadContext,
     options: PluginOptions,
   ): Promise<Plugin<BlogContent>>;
+
+  export function validateOptions(
+    args: OptionValidationContext<Options | undefined, PluginOptions>,
+  ): PluginOptions;
 }
 
 declare module '@theme/BlogPostPage' {
+  import type {ReactNode} from 'react';
   import type {
     BlogPostFrontMatter,
     BlogSidebar,
@@ -683,18 +692,23 @@ declare module '@theme/BlogPostPage' {
     readonly blogMetadata: BlogMetadata;
   }
 
-  export default function BlogPostPage(props: Props): JSX.Element;
+  export default function BlogPostPage(props: Props): ReactNode;
 }
 
 declare module '@theme/BlogPostPage/Metadata' {
-  export default function BlogPostPageMetadata(): JSX.Element;
+  import type {ReactNode} from 'react';
+
+  export default function BlogPostPageMetadata(): ReactNode;
 }
 
 declare module '@theme/BlogPostPage/StructuredData' {
-  export default function BlogPostStructuredData(): JSX.Element;
+  import type {ReactNode} from 'react';
+
+  export default function BlogPostStructuredData(): ReactNode;
 }
 
 declare module '@theme/BlogListPage' {
+  import type {ReactNode} from 'react';
   import type {Content} from '@theme/BlogPostPage';
   import type {
     BlogSidebar,
@@ -713,10 +727,11 @@ declare module '@theme/BlogListPage' {
     readonly items: readonly {readonly content: Content}[];
   }
 
-  export default function BlogListPage(props: Props): JSX.Element;
+  export default function BlogListPage(props: Props): ReactNode;
 }
 
 declare module '@theme/BlogListPage/StructuredData' {
+  import type {ReactNode} from 'react';
   import type {Content} from '@theme/BlogPostPage';
   import type {
     BlogSidebar,
@@ -735,10 +750,11 @@ declare module '@theme/BlogListPage/StructuredData' {
     readonly items: readonly {readonly content: Content}[];
   }
 
-  export default function BlogListPageStructuredData(props: Props): JSX.Element;
+  export default function BlogListPageStructuredData(props: Props): ReactNode;
 }
 
 declare module '@theme/BlogTagsListPage' {
+  import type {ReactNode} from 'react';
   import type {BlogSidebar} from '@docusaurus/plugin-content-blog';
   import type {TagsListItem} from '@docusaurus/utils';
 
@@ -749,10 +765,11 @@ declare module '@theme/BlogTagsListPage' {
     readonly tags: TagsListItem[];
   }
 
-  export default function BlogTagsListPage(props: Props): JSX.Element;
+  export default function BlogTagsListPage(props: Props): ReactNode;
 }
 
 declare module '@theme/Blog/Pages/BlogAuthorsListPage' {
+  import type {ReactNode} from 'react';
   import type {
     AuthorItemProp,
     BlogSidebar,
@@ -765,10 +782,11 @@ declare module '@theme/Blog/Pages/BlogAuthorsListPage' {
     readonly authors: AuthorItemProp[];
   }
 
-  export default function BlogAuthorsListPage(props: Props): JSX.Element;
+  export default function BlogAuthorsListPage(props: Props): ReactNode;
 }
 
 declare module '@theme/Blog/Pages/BlogAuthorsPostsPage' {
+  import type {ReactNode} from 'react';
   import type {Content} from '@theme/BlogPostPage';
   import type {
     AuthorItemProp,
@@ -790,10 +808,11 @@ declare module '@theme/Blog/Pages/BlogAuthorsPostsPage' {
     readonly items: readonly {readonly content: Content}[];
   }
 
-  export default function BlogAuthorsPostsPage(props: Props): JSX.Element;
+  export default function BlogAuthorsPostsPage(props: Props): ReactNode;
 }
 
 declare module '@theme/BlogTagsPostsPage' {
+  import type {ReactNode} from 'react';
   import type {Content} from '@theme/BlogPostPage';
   import type {
     BlogSidebar,
@@ -815,10 +834,11 @@ declare module '@theme/BlogTagsPostsPage' {
     readonly items: readonly {readonly content: Content}[];
   }
 
-  export default function BlogTagsPostsPage(props: Props): JSX.Element;
+  export default function BlogTagsPostsPage(props: Props): ReactNode;
 }
 
 declare module '@theme/BlogArchivePage' {
+  import type {ReactNode} from 'react';
   import type {Content} from '@theme/BlogPostPage';
 
   /** We may add extra metadata or prune some metadata from here */
@@ -832,5 +852,5 @@ declare module '@theme/BlogArchivePage' {
     };
   }
 
-  export default function BlogArchivePage(props: Props): JSX.Element;
+  export default function BlogArchivePage(props: Props): ReactNode;
 }

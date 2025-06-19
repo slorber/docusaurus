@@ -60,6 +60,7 @@ module.exports = {
   },
   reportUnusedDisableDirectives: true,
   plugins: [
+    'react-compiler',
     'react-hooks',
     'header',
     'jest',
@@ -68,6 +69,7 @@ module.exports = {
     '@docusaurus',
   ],
   rules: {
+    'react-compiler/react-compiler': ERROR,
     'react/jsx-uses-react': OFF, // JSX runtime: automatic
     'react/react-in-jsx-scope': OFF, // JSX runtime: automatic
     'array-callback-return': WARNING,
@@ -296,7 +298,7 @@ module.exports = {
     'jest/expect-expect': OFF,
     'jest/no-large-snapshots': [
       WARNING,
-      {maxSize: Infinity, inlineMaxSize: 10},
+      {maxSize: Infinity, inlineMaxSize: 50},
     ],
     'jest/no-test-return-statement': ERROR,
     'jest/prefer-expect-resolves': WARNING,

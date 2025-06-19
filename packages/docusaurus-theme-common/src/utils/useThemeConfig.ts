@@ -9,12 +9,13 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import type {PrismTheme} from 'prism-react-renderer';
 import type {DeepPartial} from 'utility-types';
 import type {MagicCommentConfig} from './codeBlockUtils';
+import type {ColorMode} from '../contexts/colorMode';
 
 export type DocsVersionPersistence = 'localStorage' | 'none';
 
 // TODO improve types, use unions
 export type NavbarItem = {
-  type?: string | undefined;
+  type?: string;
   items?: NavbarItem[];
   label?: string;
   position?: 'left' | 'right';
@@ -44,7 +45,7 @@ export type Navbar = {
 };
 
 export type ColorModeConfig = {
-  defaultMode: 'light' | 'dark';
+  defaultMode: ColorMode;
   disableSwitch: boolean;
   respectPrefersColorScheme: boolean;
 };
@@ -67,11 +68,18 @@ export type PrismConfig = {
 
 export type FooterLinkItem = {
   label?: string;
+  className?: string;
   to?: string;
   href?: string;
   html?: string;
   prependBaseUrlToHref?: string;
 } & {[key: string]: unknown};
+
+export type FooterColumnItem = {
+  title: string | null;
+  className?: string;
+  items: FooterLinkItem[];
+};
 
 export type FooterLogo = BaseLogo;
 
@@ -82,10 +90,7 @@ export type FooterBase = {
 };
 
 export type MultiColumnFooter = FooterBase & {
-  links: {
-    title: string | null;
-    items: FooterLinkItem[];
-  }[];
+  links: FooterColumnItem[];
 };
 
 export type SimpleFooter = FooterBase & {
@@ -99,6 +104,7 @@ export type TableOfContents = {
   maxHeadingLevel: number;
 };
 
+// TODO Docusaurus v4: use interface + declaration merging to enhance
 // Theme config after validation/normalization
 export type ThemeConfig = {
   docs: {

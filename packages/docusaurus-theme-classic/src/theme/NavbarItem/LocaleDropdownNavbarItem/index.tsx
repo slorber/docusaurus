@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
+import React, {type ReactNode} from 'react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import {useAlternatePageUtils} from '@docusaurus/theme-common/internal';
 import {translate} from '@docusaurus/Translate';
-import {useLocation} from '@docusaurus/router';
+import {useHistorySelector} from '@docusaurus/theme-common';
 import DropdownNavbarItem from '@theme/NavbarItem/DropdownNavbarItem';
 import IconLanguage from '@theme/Icon/Language';
 import type {LinkLikeNavbarItemProps} from '@theme/NavbarItem';
@@ -23,12 +23,13 @@ export default function LocaleDropdownNavbarItem({
   dropdownItemsAfter,
   queryString = '',
   ...props
-}: Props): JSX.Element {
+}: Props): ReactNode {
   const {
     i18n: {currentLocale, locales, localeConfigs},
   } = useDocusaurusContext();
   const alternatePageUtils = useAlternatePageUtils();
-  const {search, hash} = useLocation();
+  const search = useHistorySelector((history) => history.location.search);
+  const hash = useHistorySelector((history) => history.location.hash);
 
   const localeItems = locales.map((locale): LinkLikeNavbarItemProps => {
     const baseTo = `pathname://${alternatePageUtils.createUrl({

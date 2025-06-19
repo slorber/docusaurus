@@ -8,21 +8,19 @@
 import path from 'path';
 import url from 'url';
 import fs from 'fs-extra';
-import {promisify} from 'util';
 import {
   toMessageRelativeFilePath,
   posixPath,
   escapePath,
   findAsyncSequential,
   getFileLoaderUtils,
+  parseURLOrPath,
 } from '@docusaurus/utils';
 import escapeHtml from 'escape-html';
-import sizeOf from 'image-size';
+import {imageSizeFromFile} from 'image-size/fromFile';
 import logger from '@docusaurus/logger';
 import {assetRequireAttributeValue, transformNode} from '../utils';
-// @ts-expect-error: TODO see https://github.com/microsoft/TypeScript/issues/49721
 import type {Plugin, Transformer} from 'unified';
-// @ts-expect-error: TODO see https://github.com/microsoft/TypeScript/issues/49721
 import type {MdxJsxTextElement} from 'mdast-util-mdx';
 import type {Image, Root} from 'mdast';
 import type {Parent} from 'unist';
@@ -53,7 +51,7 @@ async function toImageRequireNode(
   );
   relativeImagePath = `./${relativeImagePath}`;
 
-  const parsedUrl = url.parse(node.url);
+  const parsedUrl = parseURLOrPath(node.url, 'https://example.com');
   const hash = parsedUrl.hash ?? '';
   const search = parsedUrl.search ?? '';
   const requireString = `${context.inlineMarkdownImageFileLoader}${
@@ -82,7 +80,7 @@ async function toImageRequireNode(
   }
 
   try {
-    const size = (await promisify(sizeOf)(imagePath))!;
+    const size = (await imageSizeFromFile(imagePath))!;
     if (size.width) {
       attributes.push({
         type: 'mdxJsxAttribute',

@@ -13,7 +13,6 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import {getProgressBarPlugin} from '@docusaurus/bundler';
 import {createBaseConfig} from './base';
 import ChunkAssetPlugin from './plugins/ChunkAssetPlugin';
-import CleanWebpackPlugin from './plugins/CleanWebpackPlugin';
 import ForceTerminatePlugin from './plugins/ForceTerminatePlugin';
 import {createStaticDirectoriesCopyPlugin} from './plugins/StaticDirectoriesCopyPlugin';
 import type {
@@ -118,6 +117,7 @@ export async function createStartClientConfig({
           headTags,
           preBodyTags,
           postBodyTags,
+          lang: props.i18n.localeConfigs[props.i18n.currentLocale]!.htmlLang,
         }),
       ],
     },
@@ -164,8 +164,6 @@ export async function createBuildClientConfig({
     {
       plugins: [
         new ForceTerminatePlugin(),
-        // Remove/clean build folders before building bundles.
-        new CleanWebpackPlugin({verbose: false}),
         // Visualize size of webpack output files with an interactive zoomable
         // tree map.
         bundleAnalyzer && new BundleAnalyzerPlugin(),
