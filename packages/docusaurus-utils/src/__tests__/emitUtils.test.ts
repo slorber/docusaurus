@@ -141,7 +141,7 @@ describe('generate', () => {
 
   it('works with existing file but no cache', async () => {
     existsMock.mockImplementationOnce(() => true);
-    readMock.mockImplementationOnce(() => Promise.try(() => 'bar'));
+    readMock.mockImplementationOnce(() => Promise.resolve('bar'));
     await generate(__dirname, 'baz', 'bar');
     expect(writeMock).toHaveBeenCalledTimes(1);
   });

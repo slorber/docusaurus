@@ -9,4 +9,4 @@ import {createPlaygroundResponse} from '../functionUtils/playgroundUtils';
 import type {Handler} from '@netlify/functions';
 
 export const handler: Handler = () =>
-  Promise.try(() => createPlaygroundResponse('codesandbox-ts'));
+  Promise.resolve(createPlaygroundResponse('codesandbox-ts'));

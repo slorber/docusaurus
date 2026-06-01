@@ -59,9 +59,9 @@ export const unfetch = (url, options) => {
         statusText: request.statusText,
         url: request.responseURL,
         clone: response,
-        text: () => Promise.try(() => request.responseText),
-        json: () => Promise.try(() => request.responseText).then(JSON.parse),
-        blob: () => Promise.try(() => new Blob([request.response])),
+        text: () => Promise.resolve(request.responseText),
+        json: () => Promise.resolve(request.responseText).then(JSON.parse),
+        blob: () => Promise.resolve(new Blob([request.response])),
         headers: {
           keys: () => keys,
           entries: () => all,

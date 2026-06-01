@@ -75,7 +75,7 @@ const prefetch: Docusaurus['prefetch'] = (
       if (chunkAsset && !chunkAsset.includes('undefined')) {
         return prefetchHelper(chunkAsset);
       }
-      return Promise.try(() => undefined);
+      return Promise.resolve();
     }),
   );
 };
