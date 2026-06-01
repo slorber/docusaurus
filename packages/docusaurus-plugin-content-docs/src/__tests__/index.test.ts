@@ -72,7 +72,7 @@ const createFakeActions = (contentDir: string) => {
     },
     createData: (name: string, content: unknown) => {
       dataContainer[name] = content;
-      return Promise.resolve(path.join(contentDir, name));
+      return Promise.try(() => path.join(contentDir, name));
     },
     setGlobalData: (data: unknown) => {
       globalDataContainer.pluginName = {pluginId: data};

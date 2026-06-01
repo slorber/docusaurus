@@ -38,9 +38,9 @@ module.exports = async function configCreatorAsync() {
 ```
 
 ```js title="docusaurus.config.js"
-module.exports = Promise.resolve({
+module.exports = Promise.try(() => ({
   // site config...
-});
+}));
 ```
 
 </details>

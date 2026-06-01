@@ -9,4 +9,4 @@ import {createPlaygroundResponse} from '../functionUtils/playgroundUtils';
 import type {Handler} from '@netlify/functions';
 
 export const handler: Handler = () =>
-  Promise.resolve(createPlaygroundResponse('stackblitz-ts'));
+  Promise.try(() => createPlaygroundResponse('stackblitz-ts'));

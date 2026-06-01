@@ -71,7 +71,7 @@ let DocSearchModal: typeof DocSearchModalType | null = null;
 
 function importDocSearchModalIfNeeded() {
   if (DocSearchModal) {
-    return Promise.resolve();
+    return Promise.try(() => undefined);
   }
   return Promise.all([
     import('@docsearch/react/modal'),

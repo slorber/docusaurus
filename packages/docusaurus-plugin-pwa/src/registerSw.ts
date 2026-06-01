@@ -98,7 +98,7 @@ const OfflineModeActivationStrategiesImplementations = {
 async function getActiveStrategies() {
   const activeStrategies = await Promise.all(
     PWA_OFFLINE_MODE_ACTIVATION_STRATEGIES.map((strategyName) =>
-      Promise.resolve(
+      Promise.try(() =>
         OfflineModeActivationStrategiesImplementations[strategyName](),
       ).then((isActive) => (isActive ? strategyName : undefined)),
     ),

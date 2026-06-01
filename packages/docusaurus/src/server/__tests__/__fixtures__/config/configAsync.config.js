@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-module.exports = Promise.resolve({
+module.exports = Promise.try(() => ({
   title: 'Hello',
   tagline: 'Hello World',
   organizationName: 'endiliey',
   projectName: 'hello',
   baseUrl: '/',
   url: 'https://docusaurus.io',
-});
+}));
