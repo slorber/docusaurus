@@ -7,7 +7,7 @@
 
 import {describe, expect, it, vi} from 'vitest';
 import normalizeLocation from '../normalizeLocation';
-import type {Location} from 'history';
+import type {Location} from '@docusaurus/types';
 
 vi.mock('@generated/routes', () => import('./__mocks__/@generated/routes'));
 

@@ -5,11 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {useCallback, useEffect, useMemo, useSyncExternalStore} from 'react';
-import {useHistory} from '@docusaurus/router';
+import {useCallback, useEffect, useMemo} from 'react';
+import {useHistory, useLocation} from '@docusaurus/router';
 import {useEvent} from './reactUtils';
 
-import type {History, Location, Action} from 'history';
+import type {Location} from '@docusaurus/router';
+
+type Action = 'POP' | 'PUSH' | 'REPLACE';
 
 type HistoryBlockHandler = (location: Location, action: Action) => void | false;
 
@@ -51,25 +53,11 @@ export function useHistoryPopHandler(handler: HistoryBlockHandler): void {
  * @param selector
  */
 export function useHistorySelector<Value>(
-  selector: (history: History<unknown>) => Value,
+  selector: (history: ReturnType<typeof useHistory>) => Value,
 ): Value {
   const history = useHistory();
-  return useSyncExternalStore(
-    history.listen,
-    () => selector(history),
-    () =>
-      selector({
-        ...history,
-        location: {
-          ...history.location,
-          // On the server/hydration, these attributes should always be empty
-          // Forcing empty state makes this hook safe from hydration errors
-          search: '',
-          hash: '',
-          state: undefined,
-        },
-      }),
-  );
+  const location = useLocation();
+  return useMemo(() => selector(history), [history, location, selector]);
 }
 
 /**

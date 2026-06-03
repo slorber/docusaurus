@@ -41,11 +41,13 @@ declare module '@generated/registry' {
 }
 
 declare module '@generated/routes' {
-  import type {RouteConfig as RRRouteConfig} from 'react-router-config';
   import type Loadable from 'react-loadable';
 
-  type RouteConfig = RRRouteConfig & {
+  export type RouteConfig = {
     path: string;
+    exact?: boolean;
+    strict?: boolean;
+    routes?: RouteConfig[];
     component: ReturnType<typeof Loadable>;
   };
   const routes: RouteConfig[];
@@ -169,9 +171,17 @@ declare module '@docusaurus/Head' {
 
 declare module '@docusaurus/Link' {
   import type {CSSProperties, ComponentProps, ReactNode} from 'react';
-  import type {NavLinkProps as RRNavLinkProps} from 'react-router-dom';
+  import type {
+    Location,
+    NavLinkProps as RRNavLinkProps,
+  } from 'react-router-dom';
 
-  type NavLinkProps = Partial<RRNavLinkProps>;
+  type NavLinkProps = Partial<RRNavLinkProps> & {
+    activeClassName?: string;
+    activeStyle?: CSSProperties;
+    exact?: boolean;
+    isActive?: (match: unknown, location: Location) => boolean;
+  };
   export type Props = NavLinkProps &
     ComponentProps<'a'> & {
       readonly className?: string;
@@ -260,7 +270,42 @@ declare module '@docusaurus/Translate' {
 }
 
 declare module '@docusaurus/router' {
-  export {useHistory, useLocation, Redirect, matchPath} from 'react-router-dom';
+  import type {ReactNode} from 'react';
+  import type {Location, To} from 'react-router-dom';
+
+  export type {Location, To};
+  export {useLocation} from 'react-router-dom';
+  export function useHistory(): {
+    action: 'POP' | 'PUSH' | 'REPLACE';
+    location: Location;
+    length: number;
+    push: (to: To | number) => void;
+    replace: (to: To | number) => void;
+    go: (delta: number) => void;
+    goBack: () => void;
+    goForward: () => void;
+    listen: (listener: (location: Location) => void) => () => void;
+    block: (
+      blocker: (
+        location: Location,
+        action: 'POP' | 'PUSH' | 'REPLACE',
+      ) => void | false,
+    ) => () => void;
+    createHref: (to: To) => string;
+  };
+  export function Redirect(props: {to: To; push?: boolean}): ReactNode;
+  export function matchPath<Params extends {[key: string]: string | undefined}>(
+    pathname: string,
+    options?:
+      | string
+      | string[]
+      | {
+          path?: string | string[];
+          exact?: boolean;
+          strict?: boolean;
+          sensitive?: boolean;
+        },
+  ): {path: string; url: string; isExact: boolean; params: Params} | null;
 }
 
 declare module '@docusaurus/useIsomorphicLayoutEffect' {
@@ -351,9 +396,13 @@ declare module '@docusaurus/Noop' {
 }
 
 declare module '@docusaurus/renderRoutes' {
-  import {renderRoutes} from 'react-router-config';
+  import type {ReactNode} from 'react';
 
-  export default renderRoutes;
+  export default function renderRoutes(
+    routes?: unknown[],
+    extraProps?: Record<string, unknown>,
+    switchProps?: Record<string, unknown>,
+  ): ReactNode;
 }
 
 declare module '@docusaurus/useGlobalData' {

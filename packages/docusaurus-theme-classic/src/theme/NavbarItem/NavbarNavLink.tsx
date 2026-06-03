@@ -11,6 +11,7 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 import isInternalUrl from '@docusaurus/isInternalUrl';
 import {isRegexpStringMatch} from '@docusaurus/theme-common';
 import IconExternalLink from '@theme/Icon/ExternalLink';
+import type {Location} from '@docusaurus/router';
 import type {Props} from '@theme/NavbarItem/NavbarNavLink';
 
 export default function NavbarNavLink({
@@ -62,7 +63,7 @@ export default function NavbarNavLink({
       to={toUrl}
       isNavLink
       {...((activeBasePath || activeBaseRegex) && {
-        isActive: (_match, location) =>
+        isActive: (_match: unknown, location: Location) =>
           activeBaseRegex
             ? isRegexpStringMatch(activeBaseRegex, location.pathname)
             : location.pathname.startsWith(activeBaseUrl),

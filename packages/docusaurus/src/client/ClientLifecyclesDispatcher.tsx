@@ -9,7 +9,7 @@ import type {ReactElement, ReactNode} from 'react';
 import clientModules from '@generated/client-modules';
 import useIsomorphicLayoutEffect from './exports/useIsomorphicLayoutEffect';
 import type {ClientModule} from '@docusaurus/types';
-import type {Location} from 'history';
+import type {Location} from '@docusaurus/types';
 
 export function dispatchLifecycleAction<K extends keyof ClientModule>(
   lifecycleAction: K,

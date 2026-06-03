@@ -7,7 +7,7 @@
 
 import _ from 'lodash';
 import logger from '@docusaurus/logger';
-import {matchRoutes as reactRouterMatchRoutes} from 'react-router-config';
+import {matchRoutes as reactRouterMatchRoutes} from '../common/routerUtils';
 import {
   parseURLPath,
   serializeURLPath,

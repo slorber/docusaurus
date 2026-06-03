@@ -12,7 +12,7 @@ import React, {
   type ComponentType,
   type ReactNode,
 } from 'react';
-import {NavLink, Link as RRLink} from 'react-router-dom';
+import {NavLink, Link as RRLink, useLocation} from 'react-router-dom';
 import {applyTrailingSlash} from '@docusaurus/utils-common';
 import useDocusaurusContext from './useDocusaurusContext';
 import isInternalUrl from './isInternalUrl';
@@ -34,6 +34,8 @@ function Link(
     to,
     href,
     activeClassName,
+    activeStyle,
+    exact,
     isActive,
     'data-noBrokenLinkCheck': noBrokenLinkCheck,
     autoAddBaseUrl = true,
@@ -41,6 +43,7 @@ function Link(
   }: Props,
   forwardedRef: React.ForwardedRef<HTMLAnchorElement>,
 ): ReactNode {
+  const location = useLocation();
   const {siteConfig} = useDocusaurusContext();
   const {trailingSlash, baseUrl} = siteConfig;
   const router = siteConfig.future.experimental_router;
@@ -96,7 +99,7 @@ function Link(
   }
 
   const preloaded = useRef(false);
-  const LinkComponent = (isNavLink ? NavLink : RRLink) as ComponentType<Props>;
+  const LinkComponent = (isNavLink ? NavLink : RRLink) as ComponentType<any>;
 
   const IOSupported = ExecutionEnvironment.canUseIntersectionObserver;
 
@@ -182,6 +185,25 @@ function Link(
       ? {'data-test-link-type': isRegularHtmlLink ? 'regular' : 'react-router'}
       : {};
 
+  const navLinkProps = isNavLink
+    ? {
+        className: ({isActive: defaultIsActive}: {isActive: boolean}) => {
+          const finalIsActive = isActive
+            ? isActive(defaultIsActive ? ({} as never) : null, location)
+            : defaultIsActive;
+          return [props.className, finalIsActive && activeClassName]
+            .filter(Boolean)
+            .join(' ');
+        },
+        style: ({isActive: defaultIsActive}: {isActive: boolean}) => {
+          const finalIsActive = isActive
+            ? isActive(defaultIsActive ? ({} as never) : null, location)
+            : defaultIsActive;
+          return finalIsActive ? {...props.style, ...activeStyle} : props.style;
+        },
+      }
+    : {};
+
   return isRegularHtmlLink ? (
     // eslint-disable-next-line jsx-a11y/anchor-has-content, @docusaurus/no-html-links
     <a
@@ -195,13 +217,12 @@ function Link(
   ) : (
     <LinkComponent
       {...props}
+      {...navLinkProps}
       onMouseEnter={onInteractionEnter}
       onTouchStart={onInteractionEnter}
-      innerRef={handleRef}
+      ref={handleRef}
       to={targetLink}
-      // Avoid "React does not recognize the `activeClassName` prop on a DOM
-      // element"
-      {...(isNavLink && {isActive, activeClassName})}
+      end={exact}
       {...testOnlyProps}
     />
   );
