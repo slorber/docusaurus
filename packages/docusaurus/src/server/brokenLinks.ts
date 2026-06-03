@@ -7,7 +7,7 @@
 
 import _ from 'lodash';
 import logger from '@docusaurus/logger';
-import {matchRoutes as reactRouterMatchRoutes} from 'react-router-config';
+import {matchRoutes as clientMatchRoutes} from '../client/routeMatching';
 import {
   parseURLPath,
   serializeURLPath,
@@ -18,10 +18,7 @@ import {addTrailingSlash, removeTrailingSlash} from '@docusaurus/utils-common';
 import type {RouteConfig, ReportingSeverity} from '@docusaurus/types';
 
 function matchRoutes(routeConfig: RouteConfig[], pathname: string) {
-  // @ts-expect-error: React router types RouteConfig with an actual React
-  // component, but we load route components with string paths.
-  // We don't actually access component here, so it's fine.
-  return reactRouterMatchRoutes(routeConfig, pathname);
+  return clientMatchRoutes(routeConfig, pathname);
 }
 
 type BrokenLink = {

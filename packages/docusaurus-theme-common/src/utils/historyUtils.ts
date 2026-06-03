@@ -9,7 +9,10 @@ import {useCallback, useEffect, useMemo, useSyncExternalStore} from 'react';
 import {useHistory} from '@docusaurus/router';
 import {useEvent} from './reactUtils';
 
-import type {History, Location, Action} from 'history';
+import type {Location} from '@docusaurus/router';
+
+type Action = 'POP' | 'PUSH' | 'REPLACE';
+type History = ReturnType<typeof useHistory>;
 
 type HistoryBlockHandler = (location: Location, action: Action) => void | false;
 

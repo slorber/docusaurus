@@ -41,12 +41,13 @@ declare module '@generated/registry' {
 }
 
 declare module '@generated/routes' {
-  import type {RouteConfig as RRRouteConfig} from 'react-router-config';
   import type Loadable from 'react-loadable';
+  import type {RouteConfig as DocusaurusRouteConfig} from '@docusaurus/types';
 
-  type RouteConfig = RRRouteConfig & {
+  type RouteConfig = Omit<DocusaurusRouteConfig, 'component' | 'routes'> & {
     path: string;
     component: ReturnType<typeof Loadable>;
+    routes?: RouteConfig[];
   };
   const routes: RouteConfig[];
   export default routes;
@@ -169,9 +170,10 @@ declare module '@docusaurus/Head' {
 
 declare module '@docusaurus/Link' {
   import type {CSSProperties, ComponentProps, ReactNode} from 'react';
-  import type {NavLinkProps as RRNavLinkProps} from 'react-router-dom';
-
-  type NavLinkProps = Partial<RRNavLinkProps>;
+  type NavLinkProps = {
+    readonly activeClassName?: string;
+    readonly isActive?: (match: unknown, location: unknown) => boolean;
+  };
   export type Props = NavLinkProps &
     ComponentProps<'a'> & {
       readonly className?: string;
@@ -260,7 +262,32 @@ declare module '@docusaurus/Translate' {
 }
 
 declare module '@docusaurus/router' {
-  export {useHistory, useLocation, Redirect, matchPath} from 'react-router-dom';
+  export type Location = {
+    pathname: string;
+    search: string;
+    hash: string;
+    state?: unknown;
+    key?: string;
+  };
+  export function useHistory(): {
+    location: Location;
+    push: (to: string | Partial<Location>) => unknown;
+    replace: (to: string | Partial<Location>) => unknown;
+    listen: (listener: () => void) => () => void;
+    block: (
+      listener?: (
+        location: Location,
+        action: 'POP' | 'PUSH' | 'REPLACE',
+      ) => void | false,
+    ) => () => void;
+    createHref: (to: string | Partial<Location>) => string;
+  };
+  export function useLocation(): Location;
+  export function Redirect(props: {to: string}): null;
+  export function matchPath(
+    pathname: string,
+    options: {path: string; exact?: boolean; strict?: boolean} | string,
+  ): unknown;
 }
 
 declare module '@docusaurus/useIsomorphicLayoutEffect' {
@@ -351,9 +378,10 @@ declare module '@docusaurus/Noop' {
 }
 
 declare module '@docusaurus/renderRoutes' {
-  import {renderRoutes} from 'react-router-config';
+  import type {ReactNode} from 'react';
+  import type routes from '@generated/routes';
 
-  export default renderRoutes;
+  export default function renderRoutes(routeConfig: typeof routes): ReactNode;
 }
 
 declare module '@docusaurus/useGlobalData' {

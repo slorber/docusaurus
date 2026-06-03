@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {matchRoutes} from 'react-router-config';
+import {matchRoutes} from './routeMatching';
 import routes from '@generated/routes';
-import type {Location} from 'history';
+import type {Location} from './routeMatching';
 
 // Memoize previously normalized pathnames.
 const pathnames = new Map<string, string>();

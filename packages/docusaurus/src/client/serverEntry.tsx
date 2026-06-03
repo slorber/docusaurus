@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import {StaticRouter} from 'react-router-dom';
+import {Router} from './tanstackRouter';
 import {HelmetProvider, type FilledContext} from 'react-helmet-async';
 import Loadable from 'react-loadable';
 import {renderToHtml} from './renderToHtml';
@@ -26,7 +26,6 @@ const render: AppRenderer['render'] = async ({
   await preload(pathname);
 
   const modules = new Set<string>();
-  const routerContext = {};
   const helmetContext = {};
   const statefulBrokenLinks = createStatefulBrokenLinks();
 
@@ -34,11 +33,11 @@ const render: AppRenderer['render'] = async ({
     // @ts-expect-error: we are migrating away from react-loadable anyways
     <Loadable.Capture report={(moduleName) => modules.add(moduleName)}>
       <HelmetProvider context={helmetContext}>
-        <StaticRouter location={pathname} context={routerContext}>
+        <Router type="memory" location={pathname}>
           <BrokenLinksProvider brokenLinks={statefulBrokenLinks}>
             <App />
           </BrokenLinksProvider>
-        </StaticRouter>
+        </Router>
       </HelmetProvider>
     </Loadable.Capture>
   );
