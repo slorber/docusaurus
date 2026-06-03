@@ -5,7 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Location} from 'history';
+export type Location = {
+  pathname: string;
+  search: string;
+  hash: string;
+  state: unknown;
+  key?: string;
+};
 
 export type ClientModule = {
   onRouteDidUpdate?: (args: {

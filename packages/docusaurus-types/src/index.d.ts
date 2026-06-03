@@ -102,4 +102,5 @@ export {
   ChunkNames,
 } from './routing';
 
+export {type Location} from './clientModule';
 export {UseDataOptions} from './utils';

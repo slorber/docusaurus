@@ -6,14 +6,14 @@
  */
 
 import {describe, expect, it, vi} from 'vitest';
-import * as reactRouterConfig from 'react-router-config';
+import * as routerUtils from '../../common/routerUtils';
 import {handleBrokenLinks} from '../brokenLinks';
 import type {RouteConfig} from '@docusaurus/types';
 
-vi.mock('react-router-config', async () => {
-  const actual = await vi.importActual<typeof import('react-router-config')>(
-    'react-router-config',
-  );
+vi.mock('../../common/routerUtils', async () => {
+  const actual = await vi.importActual<
+    typeof import('../../common/routerUtils')
+  >('../../common/routerUtils');
 
   return {
     ...actual,
@@ -876,7 +876,7 @@ describe('handleBrokenLinks', () => {
   });
 
   it('is performant and minimize calls to matchRoutes', async () => {
-    const matchRoutesMock = vi.mocked(reactRouterConfig.matchRoutes);
+    const matchRoutesMock = vi.mocked(routerUtils.matchRoutes);
     vi.clearAllMocks();
 
     const scale = 100;

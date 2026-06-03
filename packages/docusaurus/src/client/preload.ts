@@ -6,7 +6,7 @@
  */
 
 import routes from '@generated/routes';
-import {matchRoutes} from 'react-router-config';
+import {matchRoutes} from '../common/routerUtils';
 
 /**
  * Helper function to make sure all async components for that particular route
@@ -21,5 +21,7 @@ export default function preload(pathname: string): Promise<void[]> {
     .map((p) => matchRoutes(routes, p))
     .flat();
 
-  return Promise.all(matches.map((match) => match.route.component.preload?.()));
+  return Promise.all(
+    matches.map((match) => match.route.component!.preload?.()),
+  );
 }

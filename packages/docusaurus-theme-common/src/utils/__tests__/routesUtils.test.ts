@@ -7,7 +7,7 @@
 
 import {describe, expect, it} from 'vitest';
 import {findHomePageRoute, isSamePath} from '../routesUtils';
-import type {RouteConfig} from 'react-router-config';
+import type {RouteConfig} from '@generated/routes';
 
 describe('isSamePath', () => {
   it('returns true for compared path without trailing slash', () => {

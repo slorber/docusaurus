@@ -6,7 +6,7 @@
  */
 
 import siteConfig from '@generated/docusaurus.config';
-import type {Location} from 'history';
+import type {Location} from 'react-router-dom';
 
 function logPage(
   event: string,

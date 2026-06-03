@@ -15,11 +15,20 @@ import App from './App';
 import preload from './preload';
 import docusaurus from './docusaurus';
 
+const reactRouterFutureFlags = {
+  v8_middleware: true,
+  v8_splitRouteModules: true,
+  v8_viteEnvironmentApi: true,
+  v8_passThroughRequests: true,
+  v8_trailingSlashAwareDataRequests: true,
+};
+
 function Router({children}: {children: ReactNode}): ReactNode {
+  const routerProps = {future: reactRouterFutureFlags};
   return siteConfig.future.experimental_router === 'hash' ? (
-    <HashRouter>{children}</HashRouter>
+    <HashRouter {...routerProps}>{children}</HashRouter>
   ) : (
-    <BrowserRouter>{children}</BrowserRouter>
+    <BrowserRouter {...routerProps}>{children}</BrowserRouter>
   );
 }
 
