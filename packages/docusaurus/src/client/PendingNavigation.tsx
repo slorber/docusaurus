@@ -6,13 +6,12 @@
  */
 
 import React, {type ReactNode} from 'react';
-import {Route} from 'react-router-dom';
 import ClientLifecyclesDispatcher, {
   dispatchLifecycleAction,
 } from './ClientLifecyclesDispatcher';
 import ExecutionEnvironment from './exports/ExecutionEnvironment';
 import preload from './preload';
-import type {Location} from 'history';
+import type {Location} from '@docusaurus/router';
 
 type Props = {
   readonly location: Location;
@@ -88,7 +87,7 @@ class PendingNavigation extends React.Component<Props, State> {
       <ClientLifecyclesDispatcher
         previousLocation={this.previousLocation}
         location={location}>
-        <Route location={location} render={() => children} />
+        {children}
       </ClientLifecyclesDispatcher>
     );
   }
